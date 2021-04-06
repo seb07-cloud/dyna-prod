@@ -142,5 +142,69 @@ function Complete-O365MoveRequest {
     }
 }
 
-		
+function Set-O365MailboxSettings {
+    [CmdletBinding()]
+    param (
+        
+    )
+    
+    begin {
+        Import-Module ActiveDirectory, MSOnline, CredentialManager
+
+        try {
+            $cred = Get-StoredCredential -target O365	
+            Connect-MsolService -Credential $cred
+            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+            Import-PSSession $s -AllowClobber
+        }
+
+        catch {
+            Throw "Could not connect to Office 365"
+            Write-Host $_
+        }
+    }
+    
+    process {
+        foreach ($mailbox in (Get-Mailbox)) {
+            Set-MailboxRegionalConfiguration -Identity $mailbox.UserPrincipalName -LocalizeDefaultFolderName:$true -Language De-de -DateFormat "dd.MM.yyyy"
+        }
+    }
+    
+    end {
+        
+    }
+}	
+
+function Connect-O365 {
+    [CmdletBinding()]
+    param (
+        [string]$Target = "O365"
+    )
+        
+    begin {}
+    
+    process {
+        try {
+
+            Write-Host "Connecting to Office 365, please wait ...." -ForegroundColor Green
+            $cred = Get-StoredCredential -target $Target	
+            Connect-MsolService -Credential $cred
+            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+            Import-PSSession $s -AllowClobber
+            Clear-Host
+            Write-Host "Connecting to Exchange Online, please wait ...." -ForegroundColor Green
+            Connect-ExchangeOnline -Credential (Get-StoredCredential -Target $Target) -ShowBanner:$false
+            Clear-Host
+            Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
+
+        }
+
+        catch {
+            Throw "Could not connect to Office 365" 
+            Write-Host $_
+        }
+    }
+    
+    end {}
+}
 	
