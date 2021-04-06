@@ -19,9 +19,10 @@
     Author:            Sebastian Wild	
     Email: 			   sebastian.wild@dynabcs.at
     Company:           DynaBCS Informatik
-	Date : 			   30.03.2021
+	Date : 			   06.04.2021
 
     Changelog:
+        1.1             Updated Functions
 		1.0             Initial Release
 #>
 
