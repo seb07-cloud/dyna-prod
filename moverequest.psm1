@@ -16,14 +16,14 @@
 
 
 .NOTES
-    Author:            Sebastian Wild	
-    Email: 			   sebastian.wild@dynabcs.at
-    Company:           DynaBCS Informatik
-	Date : 			   06.04.2021
+    Author:         Sebastian Wild	
+    Email:          sebastian.wild@dynabcs.at
+    Company:        DynaBCS Informatik
+	Date :          06.04.2021
 
     Changelog:
-        1.1             Updated Functions
-		1.0             Initial Release
+    1.1             Updated Functions
+	1.0             Initial Release
 #>
 
 function New-O365MoveRequest {
