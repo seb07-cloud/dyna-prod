@@ -1,13 +1,19 @@
 <#
 .SYNOPSIS
-    Generate new MoveRequests from AD Group Membership or OU
+    Different Exchange Online Modules
 .DESCRIPTION
-    Generate new MoveRequests from AD Group Membership or OU
+    - Generate new MoveRequests from AD Group Membership or OU
+    - Connect to Office 365 and Exchange Online
+    - Complete MoveRequest
+    - Setting Mailbox Settings for Mailboxes
 .OUTPUTS
     Nothing but magic
 .EXAMPLE
-    .\New-O365MoveRequest -Group "gr_O365-Sync"
-	.\New-O365MoveRequest -OU "OU=Contoso-Groups,DC=Contoso,DC=local"
+    New-O365MoveRequest
+    Complete-O365MoveRequest
+    Set-O365MailboxSettings
+    Connect-O365 
+
 
 .NOTES
     Author:            Sebastian Wild	
@@ -41,7 +47,7 @@ function New-O365MoveRequest {
 	
             Connect-MsolService -Credential $cred
             $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-            $importresults = Import-PSSession $s -AllowClobber
+            Import-PSSession $s -AllowClobber
 
 
         }
@@ -174,14 +180,14 @@ function Connect-O365 {
     
     process {
         try {
-
-            Write-Host "Connecting to Office 365, please wait ...." -ForegroundColor Green
+            Write-Progress -Activity "Initializing Connection" -Status "Fetching Credentials"
+            Start-Sleep 3
             $cred = Get-StoredCredential -target $Target	
+            Write-Progress -Activity "Initializing Connection" -Status "Connecting to Office 365" 
             Connect-MsolService -Credential $cred
             $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
             Import-PSSession $s -AllowClobber
-            Clear-Host
-            Write-Host "Connecting to Exchange Online, please wait ...." -ForegroundColor Green
+            Write-Progress -Activity "Initializing Connection" -Status "Connecting to Exchange Online" 
             Connect-ExchangeOnline -Credential (Get-StoredCredential -Target $Target) -ShowBanner:$false
             Clear-Host
             Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
@@ -196,4 +202,3 @@ function Connect-O365 {
     
     end {}
 }
-	
