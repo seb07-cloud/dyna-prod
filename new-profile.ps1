@@ -24,3 +24,15 @@ catch {
     Write-Host $_
 }
 
+$ModuleEXO = Get-Module -Name ExchangeOnlineManagement
+$ModuleMSOL = Get-Module -Name MSOnline
+$ModuleCredMan = Get-Module -Name CredentialManager
+If ($Null -eq $ModuleEXO){
+    Install-Module -Name ExchangeOnlineManagement -Confirm:$False
+}
+if ($null -eq $ModuleMSOL){
+    Install-Module -Name MSOnline -Confirm:$False
+}
+if ($null -eq $ModuleCredMan){
+    Install-Module -Name CredentialManager -Confirm:$False
+}
