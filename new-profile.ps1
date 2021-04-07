@@ -1,3 +1,5 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 if (!(Test-Path $profile)) { 
     try {
         New-Item -ItemType File -Path $PROFILE -Force
@@ -18,6 +20,7 @@ try {
         New-Item -Path "$($HOME)\Documents\PowerShell\Modules" -ItemType Directory -Name DynaPowershell -Force
         Expand-Archive .\main.zip -DestinationPath "$($HOME)\Documents\PowerShell\Modules\DynaPowershell" 
         Remove-Item .\main.zip -Force
+        Add-Content -Path $profile -Value "Import-Module $($HOME)\Documents\PowerShell\Modules\DynaPowershell\moverequest.psm1" 
     }
 }
 catch {
@@ -27,6 +30,8 @@ catch {
 $ModuleEXO = Get-Module -Name ExchangeOnlineManagement
 $ModuleMSOL = Get-Module -Name MSOnline
 $ModuleCredMan = Get-Module -Name CredentialManager
+$ModuleOrca = Get-Module -Name Orca
+
 If ($Null -eq $ModuleEXO){
     Install-Module -Name ExchangeOnlineManagement -Confirm:$False
 }
@@ -35,4 +40,7 @@ if ($null -eq $ModuleMSOL){
 }
 if ($null -eq $ModuleCredMan){
     Install-Module -Name CredentialManager -Confirm:$False
+}
+if ($null -eq $ModuleOrca){
+    Install-Module -Name Orca -Confirm:$False
 }

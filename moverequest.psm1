@@ -46,9 +46,12 @@ function New-O365MoveRequest {
             $cred = Get-StoredCredential -target O365
             $opcred = Get-StoredCredential -target AD
 	
-            Connect-MsolService -Credential $cred
-            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-            Import-PSSession $s -AllowClobber
+            if ($null -eq (Get-PSSession)) {
+                $cred = Get-StoredCredential -target O365	
+                Connect-MsolService -Credential $cred
+                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+                Import-PSSession $s -AllowClobber
+            }
 
 
         }
@@ -107,11 +110,12 @@ function Complete-O365MoveRequest {
         Import-Module ActiveDirectory, MSOnline, CredentialManager
 
         try {
-            $cred = Get-StoredCredential -target O365	
-            Connect-MsolService -Credential $cred
-            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-            Import-PSSession $s -AllowClobber
-
+            if ($null -eq (Get-PSSession)) {
+                $cred = Get-StoredCredential -target O365	
+                Connect-MsolService -Credential $cred
+                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+                Import-PSSession $s -AllowClobber
+            }
             $moverequests = Get-Moverequest | Where-Object { $_.Status -eq "Autosuspended" }
         }
 
@@ -136,18 +140,17 @@ function Complete-O365MoveRequest {
 
 function Set-O365MailboxSettings {
     [CmdletBinding()]
-    param (
-        
-    )
+    param ()
     
     begin {
         Import-Module ActiveDirectory, MSOnline, CredentialManager
-
         try {
-            $cred = Get-StoredCredential -target O365	
-            Connect-MsolService -Credential $cred
-            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-            Import-PSSession $s -AllowClobber
+            if ($null -eq (Get-PSSession)) {
+                $cred = Get-StoredCredential -target O365	
+                Connect-MsolService -Credential $cred
+                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+                Import-PSSession $s -AllowClobber
+            }
         }
 
         catch {
@@ -167,7 +170,7 @@ function Set-O365MailboxSettings {
     }
     
     end {
-        
+        Get-PSSession | Remove-PSSession
     }
 }	
 
@@ -192,7 +195,6 @@ function Connect-O365 {
             Connect-ExchangeOnline -Credential (Get-StoredCredential -Target $Target) -ShowBanner:$false
             Clear-Host
             Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
-
         }
 
         catch {
