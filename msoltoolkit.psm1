@@ -13,6 +13,7 @@
     Complete-O365MoveRequest
     Set-O365MailboxSettings
     Connect-O365 
+    Add-O365License 
 
 
 .NOTES
