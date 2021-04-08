@@ -261,6 +261,8 @@ function Add-O365License {
         }
     }
     
-    end {}
+    end {
+        Get-PSSession | Remove-PSSession
+    }
 }
 
