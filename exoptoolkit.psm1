@@ -74,11 +74,12 @@ function Remove-OnPremMailDomain {
     end {}
 }
 
-function New-O365MoveRequest {
+function New-OnPremMoveRequest {
     [CmdletBinding()]
     param (
-        [string]$Group,
-        [string]$OU, 
+        [Parameter(Mandatory)]
+        [ValidateSet("Group","OU","All")]
+        [string]$Scope,
         [Parameter(Mandatory)]
         [string]$TargetDeliveryDomain,
         [switch]$Suspendwhenreadytocomplete
@@ -86,45 +87,37 @@ function New-O365MoveRequest {
     )
 	
     begin {
-        Import-Module ActiveDirectory, MSOnline, CredentialManager
-
         $namefilter = @("Mailbox1", "Discovery*", "Administrator", "Health*" )
-
-        try {
-            $cred = Get-StoredCredential -target O365
-            $opcred = Get-StoredCredential -target AD
-	
-            if ($null -eq (Get-PSSession)) {
-                $cred = Get-StoredCredential -target O365	
-                Connect-MsolService -Credential $cred
-                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-                Import-PSSession $s -AllowClobber
-            }
-
-
-        }
-        catch {
-            Throw "Could not connect to Office 365"
-            Write-Host $_
-        }
     }
 	
     process {
         try {
-            $endpoint = Get-MigrationEndPoint
             $mailboxes = Get-Mailbox
             $moverequests = Get-Moverequest 
         }
         catch {
-            throw "Couldnt get relevant Information, e.g Mailboxes / MoveRequests or the Hybrid Migrationendpoint !"
+            throw "Couldnt get relevant Information, e.g Mailboxes / MoveRequests !"
             $_
         }
 
-        if ($Group) {
+        switch ($Scope) {
+            "Group" { $users = Get-ADGroupMember -Identity $group | Where-Object ( { $_.Name -notin $namefilter }) | ForEach-Object { (Get-ADUser $_.SamAccountName -Properties * | where-object { $null -ne $_.msExchRecipientTypeDetails }) } | Select-Object Name, userPrincipalName }
+            "OU" {$users = Get-ADUser -SearchBase $ou -Properties * | Where-Object { $_.SamAccountName -notin $namefilter } -and { $null -ne $_.msExchRecipientTypeDetails } | Select-Object Name, UserPrincipalName}
+            "All" {$users = Get-Mailbox }
+            Default {}
+        }
+
+        if ($Scope -eq "Group") {
             $users = Get-ADGroupMember -Identity $group | Where-Object ( { $_.Name -notin $namefilter }) | ForEach-Object { (Get-ADUser $_.SamAccountName -Properties * | where-object { $null -ne $_.msExchRecipientTypeDetails }) } | Select-Object Name, userPrincipalName
         }
-        else {
+        if ($Scope -eq "OU"){
             $users = Get-ADUser -SearchBase $ou -Properties * | Where-Object { $_.SamAccountName -notin $namefilter } -and { $null -ne $_.msExchRecipientTypeDetails } | Select-Object Name, UserPrincipalName
+        }
+        if ($Scope -eq "All") {
+            $users = Get-Mailbox 
+        }
+        if ($null -eq $Scope){
+            throw "Scope no defined"
         }
         $i = 0
         Foreach ($user in $users) {
@@ -132,7 +125,7 @@ function New-O365MoveRequest {
             Write-Progress -Activity "Generating MoveRequests" -Id 1 -Status "Processing $i/$($users.count) User" -PercentComplete ($i / $users.count * 100)
             try {
                 if (($user.Name -notin $moverequests.DisplayName) -or ($user.Name -notin $mailboxes.Name)) {
-                    New-MoveRequest -Erroraction Stop -Identity $user.userPrincipalName -Remote -RemoteHostName $endpoint.RemoteServer -TargetDeliveryDomain $TargetDeliveryDomain -RemoteCredential $opcred -SuspendWhenReadyToComplete:$($Suspendwhenreadytocomplete) | Out-Null
+                    New-MoveRequest -Identity $user.userPrincipalName -TargetDatabase $targetdatabase -SuspendWhenReadyToComplete:$Suspendwhenreadytocomplete | Out-Null
                     Write-Host 'MoveRequest für' $user.Name' erstellt' -ForeGroundColor Green
                 }
             }
@@ -141,11 +134,8 @@ function New-O365MoveRequest {
                 Write-Host $_
             }
         }
-        
     }
-    end {
-        Get-PSSession | Remove-PSSession
-    }
+    end {}
 }
 
 function Complete-OnPremMoveRequest {
