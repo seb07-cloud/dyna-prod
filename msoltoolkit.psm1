@@ -178,24 +178,39 @@ function Set-O365MailboxSettings {
 function Connect-O365 {
     [CmdletBinding()]
     param (
-        [string]$Target = "O365"
+        [string]$Target = "O365",
+        [switch]$MFA = $False
     )
         
     begin {}
     
     process {
         try {
-            Write-Progress -Activity "Initializing Connection" -Status "Fetching Credentials"
-            Start-Sleep 3
-            $cred = Get-StoredCredential -target $Target	
-            Write-Progress -Activity "Initializing Connection" -Status "Connecting to Office 365" 
-            Connect-MsolService -Credential $cred
-            $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-            Import-PSSession $s -AllowClobber
-            Write-Progress -Activity "Initializing Connection" -Status "Connecting to Exchange Online" 
-            Connect-ExchangeOnline -Credential (Get-StoredCredential -Target $Target) -ShowBanner:$false
-            Clear-Host
-            Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
+            if (!$MFA) {
+                Write-Progress -Activity "Initializing Connection" -Status "Fetching Credentials"
+                Start-Sleep 3
+                $cred = Get-StoredCredential -target $Target	
+                Write-Progress -Activity "Initializing Connection" -Status "Connecting to Office 365" 
+                Connect-MsolService -Credential $cred
+                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+                Import-PSSession $s -AllowClobber
+                Write-Progress -Activity "Initializing Connection" -Status "Connecting to Exchange Online" 
+                Connect-ExchangeOnline -Credential (Get-StoredCredential -Target $Target) -ShowBanner:$false
+                Clear-Host
+                Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
+            }
+            else {
+                Write-Progress -Activity "Initializing Connection" -Status "Fetching Credentials"
+                $cred = Get-Credential
+                Write-Progress -Activity "Initializing Connection" -Status "Connecting to Office 365" 
+                Connect-MsolService -Credential $cred
+                $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
+                Import-PSSession $s -AllowClobber
+                Write-Progress -Activity "Initializing Connection" -Status "Connecting to Exchange Online" 
+                Connect-ExchangeOnline -Credential $cred -ShowBanner:$false
+                Clear-Host
+                Write-Host "Successfully connected to Office 365 and Exchange Online" -ForegroundColor Green
+            }
         }
 
         catch {
@@ -205,6 +220,7 @@ function Connect-O365 {
     }
     
     end {}
+
 }
 
 function Add-O365License {
@@ -233,10 +249,10 @@ function Add-O365License {
                 $u = get-msoluser -UserPrincipalName $user.UserPrincipalName | Select-Object UserPrincipalName, DisplayName, Licenses, FirstName, LastName 
                 
                 $UsersExistingLicense = [PSCustomObject]@{
-                    UserName       = $u.DisplayName
+                    UserName = $u.DisplayName
                 }
 
-                for ($z=0; $z -lt $u.Licenses.AccountSkuId.Length; $z++ ){
+                for ($z = 0; $z -lt $u.Licenses.AccountSkuId.Length; $z++ ) {
                     $UsersExistingLicense | Add-Member -type NoteProperty -Name "Lizenz$($z)" -Value $u.Licenses.AccountSkuId[$z]
                 }
 
@@ -246,7 +262,7 @@ function Add-O365License {
             $UsersExistingLicenses | Out-GridView -Title "These License are currently assigned to the Users"
 
             $i = 0
-            foreach ($user in $chosenusers){
+            foreach ($user in $chosenusers) {
                 Write-Progress -Activity "Processing User" -Id 1 -Status "Processing $i/$($chosenusers.count) User(s)" -PercentComplete ($i / $chosenusers.count * 100)
                 foreach ($license in $chosenlicenses) {
                     $t = $t + 1
