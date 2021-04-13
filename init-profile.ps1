@@ -5,7 +5,7 @@ if (!(Test-Path $profile)) {
         New-Item -ItemType File -Path $PROFILE -Force
         if (!(Test-Path $HOME\Documents\PowerShell\Modules )) {
             New-Item -Type Directory -Path $HOME\Documents\PowerShell\Modules -Force
-            '$Env:PSModulePath = $Env:PSModulePath + ";$($HOME)\Documents\PowerShell\Modules"' | Add-Content $profile
+            'Import-Module $Env:PSModulePath = $Env:PSModulePath + ";$($HOME)\Documents\PowerShell\Modules"' | Add-Content $profile
             '[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12' | Add-Content $profile
             New-Item -Path "$($HOME)\Documents\PowerShell\Modules" -ItemType Directory -Name DynaPowershell -Force
         }
@@ -43,11 +43,11 @@ If ($Null -eq (Get-Module -Name ExchangeOnlineManagement)) {
     Install-Module -Name ExchangeOnlineManagement -Confirm:$False -Force
 }
 if ($null -eq (Get-Module -Name MSOnline)) {
-    Install-Module -Name MSOnline -Confirm:$False Force
+    Install-Module -Name MSOnline -Confirm:$False -Force
 }
 if ($null -eq (Get-Module -Name CredentialManager)) {
-    Install-Module -Name CredentialManager -Confirm:$False Force
+    Install-Module -Name CredentialManager -Confirm:$False -Force
 }
 if ($null -eq (Get-Module -Name Orca)) {
-    Install-Module -Name Orca -Confirm:$False Force
+    Install-Module -Name Orca -Confirm:$False -Force
 }
