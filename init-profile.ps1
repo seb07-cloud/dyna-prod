@@ -6,6 +6,7 @@ if (!(Test-Path $profile)) {
         if (!(Test-Path $HOME\Documents\PowerShell\Modules )) {
             New-Item -Type Directory -Path $HOME\Documents\PowerShell\Modules -Force
             '$Env:PSModulePath = $Env:PSModulePath + ";$($HOME)\Documents\PowerShell\Modules"' | Add-Content $profile
+            '[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12' | Add-Content $profile
             New-Item -Path "$($HOME)\Documents\PowerShell\Modules" -ItemType Directory -Name DynaPowershell -Force
         }
     }
