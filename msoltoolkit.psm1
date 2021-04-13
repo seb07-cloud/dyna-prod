@@ -283,26 +283,19 @@ function Add-O365License {
 }
 
 function New-O365SingleMoveRequest {
-    [CmdletBinding(HelpMessage = "Please Provide the Users UserPrincipalName and the Office 365 Routing Domain, ie: <<Customer>.mail.onmicrosoft.com> ")]
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
         [string]$User,
         [Parameter(Mandatory = $true)]
-        [string]$RoutingDomain
+        [string]$RoutingDomain,
+        [switch]$Connect
     )
     begin {
 
-        Import-Module ActiveDirectory, MSOnline, CredentialManager
-        # Get Credentials
-        $cred = Get-Credential -Message "Please Provide the Tenant Admin Credentials"
-        $opcred = Get-Credential -Message "Please Provide the OnPremise Domain Admin Credentials"
-
-        Write-Host "Connecting to Office 365 ......" -ForegroundColor Green
-
-        Connect-MsolService -Credential $cred
-        $s = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $cred -Authentication Basic -AllowRedirection
-        Import-PSSession $s -AllowClobber
-
+        if ($Connect) {
+            Connect-O365 
+        }
         Write-Host "Getting Office 365 Migration Endpoint ......" -ForegroundColor Green
         $endpoint = Get-MigrationEndPoint
 
@@ -324,4 +317,33 @@ function New-O365SingleMoveRequest {
     end {
         Remove-PSSession $s -Confirm:$False
     }
+}
+function Add-O365Routingaddress {
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory)]
+		[string]$Tenant
+	)
+	
+	begin {}
+	
+	process {
+		try {
+			foreach ($missing in (Get-Mailbox -Filter { emailaddresses -notlike "*microsoft.com" })) { 	
+				$upn = $missing.Userprincipalname.Split("@")
+				$mail = $upn[0] + "@" + $Tenant
+				Set-Mailbox $missing -EmailAddresses @{add = $mail } -WarningAction SilentlyContinue
+				Write-Host "Added Mailaddress $mail to $missing" -ForegroundColor Green
+				$i = $i + 1 
+			}
+		}
+		catch {
+			Write-Host "Couldnt add" $mail "to" $missing $_
+		}
+
+	}
+	
+	end {
+		if ($i -gt 0) { Write-Host "Added Routingaddresses on $i Mailboxes" -ForegroundColor Green }
+	}
 }
