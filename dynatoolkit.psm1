@@ -32,7 +32,7 @@ function Install-DynaProfile {
     param(
         [ValidateSet('AllUsersAllHosts', 'AllUsersCurrentHost', 'CurrentUserAllHosts', 'CurrentUserCurrentHost')]
         [string]$Scope = "CurrentUserAllHosts",
-        [Uri]$URL = 'https://raw.githubusercontent.com/seboo30/Productive/main/dynatoolkit.psm1'
+        [Uri]$URL = 'https://raw.githubusercontent.com/seboo30/Productive/main/Microsoft.PowerShell_profile.ps1'
     )
     
     begin {}
@@ -77,7 +77,7 @@ try {
     Invoke-WebRequest -Method Get -Uri "https://github.com/seboo30/Productive/archive/refs/heads/main.zip" -OutFile .\main.zip
     $mymodulepath = "$($HOME)\Documents\PowerShell\Modules"
     try {
-        New-Item -Path $mymodulepath -ItemType Directory -Name DynaPowershell -Force -ErrorAction SilentlyContinue
+        New-Item -Path $mymodulepath -ItemType Directory -Name DynaToolKit -Force -ErrorAction SilentlyContinue
         New-Item -Path "C:\" -ItemType Directory -Name Temp -Force -ErrorAction SilentlyContinue
     }
     catch {
@@ -85,11 +85,11 @@ try {
     }
     Expand-Archive .\main.zip -DestinationPath "C:\Temp" 
     Remove-Item .\main.zip -Force
-    Get-ChildItem "C:\Temp\Productive-main" | Copy-Item -Destination (Join-Path -path $mymodulepath -childpath "DynaPowershell")
-    Add-Content -Path $profile -Value (Join-Path -path $mymodulepath -childpath "msoltoolkit.psm1")
-    Import-Module (Join-Path -path $mymodulepath -childpath "DynaPowershell\msoltoolkit.psm1")
+    Get-ChildItem "C:\Temp\Productive-main" | Copy-Item -Destination (Join-Path -path $mymodulepath -childpath "DynaToolKit")
+    Add-Content -Path $profile -Value (Join-Path -path $mymodulepath -childpath "dynatoolkit.psm1")
+    Import-Module (Join-Path -path $mymodulepath -childpath "DynaToolKit\dynatoolkit.psm1")
 
-    if(Test-Path -path (Join-Path -path $mymodulepath -childpath "DynaPowershell\msoltoolkit.psm1")){
+    if(Test-Path -path (Join-Path -path $mymodulepath -childpath "DynaToolKit\dynatoolkit.psm1")){
         Remove-Item "C:\Temp\Productive-main" -Force -Recurse
     }
 }
