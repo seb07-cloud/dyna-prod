@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Different Exchange Online Modules
+    The Swiss Army Knive of Hybrid Migration 
 .DESCRIPTION
     - Generate new MoveRequests from AD Group Membership or OU
     - Connect to Office 365 and Exchange Online
