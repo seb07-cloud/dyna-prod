@@ -59,7 +59,7 @@ function Install-DynaModule {
     [CmdletBinding()]
     param (
         [Uri]$URL = 'https://raw.githubusercontent.com/seboo30/Productive/main/dynatoolkit.psm1',
-        [String]$Dynamodulepath = "C:\pccfg\Scripts\Modules"
+        [String]$Dynamodulepath = "C:\pccfg\Scripts\Modules\DynaToolKit"
     )
     
     begin {
