@@ -83,7 +83,6 @@ function New-OnPremMoveRequest {
         [Parameter(Mandatory)]
         [string]$TargetDeliveryDomain,
         [switch]$Suspendwhenreadytocomplete
-
     )
 	
     begin {
