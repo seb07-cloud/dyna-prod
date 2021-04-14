@@ -55,8 +55,33 @@ function Install-DynaProfile {
     end {}
 }
 
+function Install-DynaModule {
+    [CmdletBinding()]
+    param (
+        [Uri]$URL = 'https://raw.githubusercontent.com/seboo30/Productive/main/dynatoolkit.psm1',
+        [String]$Dynamodulepath = "C:\pccfg\Scripts\Modules"
+    )
+    
+    begin {
+        $module_file = "$Dynamodulepath\dynatoolkit.psm1"
+        $request = Invoke-WebRequest $URL -UseBasicParsing  -ContentType "text/plain; charset=utf-8"
+    }
+    
+    process {
+        if (!(Test-Path $dynamodulepath )) {
+            New-Item -Type Directory -Path $dynamodulepath -Force 
+            New-Item -Path $dynamodulepath -ItemType Directory -Name DynaToolKit -Force
+        }
 
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        [IO.File]::WriteAllLines($module_file, $request.Content)
+        Write-Verbose "Wrote Module file: $module_file with content from: $URL"
+        & $module_file -Verbose
+    }
+    
+    end {
+        
+    }
+}
 
 if (!(Test-Path $profile)) { 
     try {
@@ -96,21 +121,6 @@ try {
 catch {
     Write-Host $_
 }
-
-If ($Null -eq (Get-Module -Name ExchangeOnlineManagement)) {
-    Install-Module -Name ExchangeOnlineManagement -Confirm:$False -Force
-}
-if ($null -eq (Get-Module -Name MSOnline)) {
-    Install-Module -Name MSOnline -Confirm:$False -Force
-}
-if ($null -eq (Get-Module -Name CredentialManager)) {
-    Install-Module -Name CredentialManager -Confirm:$False -Force
-}
-if ($null -eq (Get-Module -Name Orca)) {
-    Install-Module -Name Orca -Confirm:$False -Force
-}
-
-
 
 function New-O365MoveRequest {
     [CmdletBinding()]

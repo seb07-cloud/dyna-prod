@@ -1,4 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$Env:PSModulePath = $Env:PSModulePath + ";" + $dynamodulepath
 
 $modules = @(
     "ExchangeOnlineManagement"
@@ -12,3 +13,4 @@ foreach ($module in $modules) {
         Install-Module -Name $module -Confirm:$False -Force -Scope CurrentUser
     }
 }
+
