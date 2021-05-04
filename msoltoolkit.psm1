@@ -86,7 +86,7 @@ function New-O365MoveRequest {
             try {
                 if (($user.Name -notin $moverequests.DisplayName) -or ($user.Name -notin $mailboxes.Name)) {
                     New-MoveRequest -Erroraction Stop -Identity $user.userPrincipalName -Remote -RemoteHostName $endpoint.RemoteServer -TargetDeliveryDomain $TargetDeliveryDomain -RemoteCredential $opcred -SuspendWhenReadyToComplete:$($Suspendwhenreadytocomplete) | Out-Null
-                    Write-Host 'MoveRequest für' $user.Name' erstellt' -ForeGroundColor Green
+                    Write-Host 'MoveRequest $user.Name erstellt' -ForeGroundColor Green
                 }
             }
             catch {
