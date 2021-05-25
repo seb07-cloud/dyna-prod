@@ -16,9 +16,9 @@ $modules = @(
 )
 
 foreach ($module in $modules) {
-    if ($Null -eq (Get-Module -Name $module)) {
+    if ($Null -eq (Get-InstalledModule -Name $module)) {
         Write-Host "Installing $module" -ForegroundColor Green
-        Install-Module -Name $module -Confirm:$False -Force -Scope CurrentUser
+        Install-Module -Name $module -Confirm:$False -Force #-Scope CurrentUser
     }
 }
 
