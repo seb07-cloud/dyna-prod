@@ -197,7 +197,9 @@ function Complete-O365MoveRequest {
 
 function Set-O365MailboxSettings {
     [CmdletBinding()]
-    param ()
+    param (
+        [string]$Mailbox
+    )
     
     begin {
         Import-Module ActiveDirectory, MSOnline, CredentialManager
@@ -217,12 +219,24 @@ function Set-O365MailboxSettings {
     }
     
     process {
-        $mailboxes = Get-Mailbox
-        $i = 0
-        foreach ($mailbox in $mailboxes) {
-            $i = $i + 1
-            Write-Progress -Activity "Adding Regionalsettings on Mailboxes" -Id 1 -Status "Processing $i/$($mailboxes.count) mailboxes" -PercentComplete ($i / $mailboxes.count * 100)
-            Set-MailboxRegionalConfiguration -Identity $mailbox.UserPrincipalName -Language De-de -DateFormat "dd.MM.yyyy" -TimeZone "W. Europe Standard Time" | Out-Null
+        if ($mailbox) {
+            try{
+                Set-MailboxRegionalConfiguration -Identity $mailbox -Language De-de -DateFormat "dd.MM.yyyy" -TimeZone "W. Europe Standard Time" | Out-Null
+                Write-Host "Regional Settings set on $($mailbox)"
+            }
+            catch{
+                Write-Host $_
+            }
+
+        }
+        else {
+            $mailboxes = Get-Mailbox
+            $i = 0
+            foreach ($mbx in $mailboxes) {
+                $i = $i + 1
+                Write-Progress -Activity "Adding Regionalsettings on Mailboxes" -Id 1 -Status "Processing $i/$($mailboxes.count) mailboxes" -PercentComplete ($i / $mailboxes.count * 100)
+                Set-MailboxRegionalConfiguration -Identity $mailbox.UserPrincipalName -Language De-de -DateFormat "dd.MM.yyyy" -TimeZone "W. Europe Standard Time" | Out-Null
+            }
         }
     }
     

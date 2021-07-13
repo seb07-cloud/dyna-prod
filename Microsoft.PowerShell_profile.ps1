@@ -1,5 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Env:PSModulePath = $Env:PSModulePath + ";" + $dynamodulepath
+#$Env:PSModulePath = $Env:PSModulePath + ";" + $dynamodulepath
 
 try {
     Import-Module C:\pccfg\Scripts\Modules\DynaToolKit\dynatoolkit.psm1
@@ -20,5 +20,9 @@ foreach ($module in $modules) {
         Write-Host "Installing $module" -ForegroundColor Green
         Install-Module -Name $module -Confirm:$False -Force #-Scope CurrentUser
     }
+}
+
+if (!(Test-Path $profile)){
+    New-Item –Path $Profile –Type File –Force
 }
 
