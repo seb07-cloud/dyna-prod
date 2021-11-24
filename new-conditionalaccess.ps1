@@ -72,6 +72,7 @@ $CAConditions.Applications.IncludeApplications = 'All'
 $CAConditions.Users = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessUserCondition
 $CAConditions.Users.IncludeUsers = $AdminUser.ObjectId
 $CAConditions.Locations = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessLocationCondition
+$CAConditions.Locations.IncludeLocations = 'All'
 $CAConditions.Locations.ExludeLocations = $Location.Id
 
 $CAControls = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessGrantControls
