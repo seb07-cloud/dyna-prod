@@ -11,13 +11,13 @@
 .NOTES
     Module Required :  AzureAD 
 
-    Author:            Sebastian Wild	
-    Email: 			   sebastian.wild@dynabcs.at
-    Company:           DynaBCS Informatik
-	Date : 			   24.11.21
+    Author:             Sebastian Wild	
+    Email:              sebastian.wild@dynabcs.at
+    Company:            DynaBCS Informatik
+	Date:               24.11.21
        
     Changelog:
-		1.0            Initial Release
+    1.0                 Initial Release
 #>
 
 
