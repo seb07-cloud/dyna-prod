@@ -47,6 +47,13 @@ while (!(IsValidEmail -Email $Admin)){
     $Admin = Read-Host -Prompt "Admin Email Address"
 }
 
+while (!(Get-AzureAdUser -SearchString $Admin)) {
+    Write-Host "User not found ! Type in a valid User" -ForegroundColor Red
+    $Admin = Read-Host -Prompt "Admin Email Address"
+}
+
+$AdminUser = Get-AzureAdUser -SearchString $Admin
+
 # New Trusted Subnet
 
 $Dyna = New-Object -TypeName Microsoft.Open.MSGraph.Model.IpRange
@@ -63,9 +70,9 @@ $CAConditions.Applications.IncludeApplications = 'All'
 # Create Conditions
 
 $CAConditions.Users = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessUserCondition
-$CAConditions.Users.IncludeUsers = $Admin
+$CAConditions.Users.IncludeUsers = $AdminUser.ObjectId
 $CAConditions.Locations = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessLocationCondition
-$CAConditions.Locations.IncludeLocations = $Location.Id
+$CAConditions.Locations.ExludeLocations = $Location.Id
 
 $CAControls = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAccessGrantControls
 $CAControls._Operator = "OR"
