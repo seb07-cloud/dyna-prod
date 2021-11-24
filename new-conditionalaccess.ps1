@@ -78,6 +78,6 @@ $CAControls = New-Object -TypeName Microsoft.Open.MSGraph.Model.ConditionalAcces
 $CAControls._Operator = "OR"
 $CAControls.BuiltInControls = "Mfa"
 
-# New CA Policy
+# Create CA Policy
 
 New-AzureADMSConditionalAccessPolicy -DisplayName "MFA_Admin" -State "Enabled" -Conditions $CAConditions -GrantControls $CAControls
