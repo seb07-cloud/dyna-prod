@@ -9,7 +9,7 @@
     .\New-ConditionalAccess.ps1 
 
 .NOTES
-    Module Required :  AzureAD 
+    Module Required:    AzureAD 
 
     Author:             Sebastian Wild	
     Email:              sebastian.wild@dynabcs.at
