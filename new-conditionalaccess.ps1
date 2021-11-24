@@ -6,12 +6,11 @@
 .OUTPUTS
     Nothing but magic
 .EXAMPLE
-    Module required :
-        AzureAD 
-
     .\New-ConditionalAccess.ps1 
 
 .NOTES
+    Module Required :  AzureAD 
+
     Author:            Sebastian Wild	
     Email: 			   sebastian.wild@dynabcs.at
     Company:           DynaBCS Informatik
