@@ -42,7 +42,7 @@ $Admin = Read-Host -Prompt "Admin Email Address"
 
 while (!(IsValidEmail -Email $Admin)){
     Write-Host "Type in a valid Email Address !" -ForegroundColor Red
-    $Admin = Read-Host
+    $Admin = Read-Host -Prompt "Admin Email Address"
 }
 
 # New Trusted Subnet
