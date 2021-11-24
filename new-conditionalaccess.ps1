@@ -39,17 +39,17 @@ function IsValidEmail {
 
 # Read Adminuser
 
-Write-Host "Type in the UserPrincipalName of the Adminuser which you want to protect:" -ForegroundColor Green
-$Admin = Read-Host -Prompt "Admin Email Address"
+Write-Host "Type in the UserPrincipalName of the adminuser which you want to protect:" -ForegroundColor Green
+$Admin = Read-Host -Prompt "admin emailaddress"
 
 while (!(IsValidEmail -Email $Admin)){
-    Write-Host "Type in a valid Email Address !" -ForegroundColor Red
-    $Admin = Read-Host -Prompt "Admin Email Address"
+    Write-Host "Type in a valid emailaddress !" -ForegroundColor Red
+    $Admin = Read-Host -Prompt "admin emailaddress"
 }
 
 while (!(Get-AzureAdUser -SearchString $Admin)) {
-    Write-Host "User not found ! Type in a valid User" -ForegroundColor Red
-    $Admin = Read-Host -Prompt "Admin Email Address"
+    Write-Host "User not found ! Type in a valid user/emailaddress" -ForegroundColor Red
+    $Admin = Read-Host -Prompt "admin emailaddress"
 }
 
 $AdminUser = Get-AzureAdUser -SearchString $Admin
