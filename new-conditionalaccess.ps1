@@ -6,7 +6,7 @@
 .OUTPUTS
     Nothing but magic
 .EXAMPLE
-    .\New-ConditionalAccess 
+    .\New-ConditionalAccess.ps1 
 
 .NOTES
     Author:            Sebastian Wild	
@@ -50,7 +50,7 @@ while (!(IsValidEmail -Email $Admin)){
 $Dyna = New-Object -TypeName Microsoft.Open.MSGraph.Model.IpRange
 $Dyna.cidrAddress = '194.183.133.226/32'
 
-$Location = New-AzureADMSNamedLocationPolicy -OdataType "#microsoft.graph.ipNamedLocation" -DisplayName 'DYNA' -IsTrusted $True -IpRanges $Dyna
+$Location = New-AzureADMSNamedLocationPolicy -OdataType "#microsoft.graph.ipNamedLocation" -DisplayName 'Dyna' -IsTrusted $True -IpRanges $Dyna
 
 # Create Policy Settings
 
