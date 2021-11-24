@@ -6,6 +6,9 @@
 .OUTPUTS
     Nothing but magic
 .EXAMPLE
+    Module required :
+        AzureAD 
+
     .\New-ConditionalAccess.ps1 
 
 .NOTES
