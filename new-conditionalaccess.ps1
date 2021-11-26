@@ -20,7 +20,9 @@
     1.0                 Initial Release
 #>
 
-
+if (!(Get-PSSession)){
+    connect-azuread
+}
 function IsValidEmail { 
     param([string]$Email)
     $Regex = '^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$'
