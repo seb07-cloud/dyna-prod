@@ -1,3 +1,5 @@
+#Requires -Modules ActiveDirectory, MSOnline, CredentialManager
+
 <#
 .SYNOPSIS
     Different Exchange Online Modules

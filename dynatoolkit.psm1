@@ -1,3 +1,4 @@
+#Requires -Modules ActiveDirectory, MSOnline, CredentialManager
 <#
 .SYNOPSIS
     The Swiss Army Knive of Hybrid Migration 
