@@ -1,3 +1,4 @@
+#Requires –Modules PSWriteColor,AzureAD
 <#
 .SYNOPSIS
     Create Policies for Conditional Access
