@@ -20,6 +20,10 @@
     1.0                 Initial Release
 #>
 
+Import-Module PSWriteColor
+
+$error.clear()
+
 if (!(Get-PSSession)){
     connect-azuread
 }
@@ -84,3 +88,11 @@ $CAControls.BuiltInControls = "Mfa"
 # Create CA Policy
 
 New-AzureADMSConditionalAccessPolicy -DisplayName "MFA_Admin" -State "Enabled" -Conditions $CAConditions -GrantControls $CAControls
+
+if (!($error)){
+    Write-Color -Text "Conditional Access Policy for",
+        " $($Admin)",
+        " and an exclude for the following subnet", 
+        " $($Dyna.cidrAddress)",
+        " is created !" -Color Green,Red, Green,Red,Green
+}
