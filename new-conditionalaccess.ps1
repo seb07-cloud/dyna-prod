@@ -95,5 +95,5 @@ if (!($error)){
         " $($Admin)",
         " and an exclude for the following subnet", 
         " $($Dyna.cidrAddress)",
-        " is created !" -Color Green,Red, Green,Red,Green
+        " is created !" -Color Green,DarkYellow,Green,DarkYellow,Green
 }
