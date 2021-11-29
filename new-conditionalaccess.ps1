@@ -21,6 +21,7 @@
 #>
 
 Import-Module PSWriteColor
+Import-Module AzureAD
 
 $error.clear()
 
