@@ -18,6 +18,8 @@
        
     Changelog:
     1.0                 Initial Release
+    1.1                 Connect to Azure AD
+    1.2                 Color Output
 #>
 
 Import-Module PSWriteColor
